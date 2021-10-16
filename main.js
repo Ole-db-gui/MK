@@ -1,36 +1,44 @@
-const kitana = {
+const arenas = document.querySelector('.arenas');
+const player1 = {
     name: "Kitana",
-    hp: 88,
+    hp: 100,
     img: "http://reactmarathon-api.herokuapp.com/assets/kitana.gif",
+    player: 1,
     attack: function() {
         console.log(this.name + " Fight...");
     },
 };
 
-const subZero = {
+const player2 = {
     name: "Sub-Zero",
-    hp: 50,
+    hp: 100,
     img: "http://reactmarathon-api.herokuapp.com/assets/subzero.gif",
+    player: 2,
     attack: function() {
         console.log(this.name + " Fight...");
     },
 };
 
-function createPlayer(playerNumber, character) {
-    const player = document.createElement("div");
-    const progressbar = document.createElement("div");
-    const life = document.createElement("div");
-    const name = document.createElement("div");
-    const model = document.createElement("div");
-    const imgModel = document.createElement("img");
+function createElement(tagName, className) {
+    const tag = document.createElement(tagName);
 
-    player.classList.add(`${playerNumber}`);
-    progressbar.classList.add("progressbar");
-    life.classList.add("life");
+    if (className) {
+        tag.classList.add(className);
+    }
+
+    return tag;
+}
+
+function createPlayer(character) {
+    const player = createElement("div", 'player' + character.player);
+    const progressbar = createElement("div", 'progressbar');
+    const life = createElement("div", 'life');
+    const name = createElement("div", 'name');
+    const model = createElement("div", 'character');
+    const imgModel = createElement("img");
+
     life.style.width = `${character.hp}%`;
-    name.classList.add("name");
     name.innerText = `${character.name}`;
-    model.classList.add("character");
     imgModel.src = `${character.img}`;
 
     progressbar.append(life);
@@ -38,8 +46,8 @@ function createPlayer(playerNumber, character) {
     player.append(progressbar);
     model.append(imgModel);
     player.append(model);
-    document.querySelector(".arenas").appendChild(player);
+    return player;
 }
 
-createPlayer("player1", kitana);
-createPlayer("player2", subZero);
+arenas.append(createPlayer(player1));
+arenas.append(createPlayer(player2));
