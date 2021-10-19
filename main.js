@@ -1,83 +1,129 @@
-const arenas = document.querySelector(".arenas");
-const randomBtn = document.querySelector(".button");
+const $arenas = document.querySelector(".arenas");
+const $randomBtn = document.querySelector(".button");
 
-const player1 = {
-    name: "Kitana",
-    hp: 100,
-    img: "http://reactmarathon-api.herokuapp.com/assets/kitana.gif",
+const subzero = {
     player: 1,
-    attack: function() {
-        console.log(this.name + " Fight...");
-    },
-};
-
-const player2 = {
-    name: "Sub-Zero",
+    name: "Subzero",
     hp: 100,
     img: "http://reactmarathon-api.herokuapp.com/assets/subzero.gif",
-    player: 2,
-    attack: function() {
+    weapon: ["Kunai", "Sword", "Axe"],
+    attack() {
         console.log(this.name + " Fight...");
     },
+    changeHP: changeHP,
+    elHP: elHP,
+    renderHP: renderHP,
 };
 
-randomBtn.addEventListener("click", function() {
-    changeHP(player1);
-    changeHP(player2);
-    if (player1.hp <= 0) {
-        arenas.appendChild(playerWin(player2.name));
-    } else if (player2.hp <= 0) {
-        arenas.appendChild(playerWin(player1.name));
-    }
-});
+const scorpion = {
+    player: 2,
+    name: "Scorpion",
+    hp: 100,
+    img: "http://reactmarathon-api.herokuapp.com/assets/scorpion.gif",
+    weapon: ["Knife", "Blade", "DualSword"],
+    attack() {
+        console.log(this.name + " Fight...");
+    },
+    changeHP: changeHP,
+    elHP: elHP,
+    renderHP: renderHP,
+};
 
-function changeHP(player) {
-    const playerLife = document.querySelector(
-        ".player" + player.player + " .life"
-    );
-    player.hp -= Math.ceil(Math.random() * 20);
-    playerLife.style.width = player.hp + "%";
-
-    if (player.hp <= 0) {
-        playerLife.style.width = "0%";
-    }
-}
-
-function playerWin(name) {
-    const winTitle = createElement("div", "winTitle");
-    randomBtn.disabled = true;
-    winTitle.innerText = name + " wins";
-
-    return winTitle;
-}
-
-function createElement(tagName, className) {
-    const tag = document.createElement(tagName);
+function createElement(tag, className) {
+    const $tag = document.createElement(tag);
     if (className) {
-        tag.classList.add(className);
+        $tag.classList.add(className);
     }
-    return tag;
+    return $tag;
 }
 
 function createPlayer(character) {
     const player = createElement("div", "player" + character.player);
-    const progressbar = createElement("div", "progressbar");
-    const life = createElement("div", "life");
-    const name = createElement("div", "name");
-    const model = createElement("div", "character");
-    const imgModel = createElement("img");
+    const $progressbar = createElement("div", "progressbar");
+    const $character = createElement("div", "character");
+    const $life = createElement("div", "life");
+    const $name = createElement("div", "name");
+    const $img = createElement("img");
 
-    life.style.width = `${character.hp}%`;
-    name.innerText = `${character.name}`;
-    imgModel.src = `${character.img}`;
+    $life.style.width = character.hp + "%";
+    $name.innerText = character.name;
+    $img.src = character.img;
 
-    progressbar.append(life);
-    progressbar.append(name);
-    player.append(progressbar);
-    model.append(imgModel);
-    player.append(model);
+    player.append($progressbar, $character);
+    $progressbar.append($life, $name);
+    $character.append($img);
+
     return player;
 }
 
-arenas.append(createPlayer(player1));
-arenas.append(createPlayer(player2));
+function randomNum(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+function changeHP(damageHit) {
+    this.hp -= damageHit;
+    if (this.hp < 0) {
+        this.hp = 0;
+    }
+    return this.hp;
+}
+
+function elHP() {
+    return document.querySelector(".player" + this.player + " .life");
+}
+
+function renderHP() {
+    let $el = this.elHP();
+    return ($el.style.width = this.hp + "%");
+}
+
+function disableBtn(btn) {
+    btn.disabled = true;
+    btn.style.background = "#333";
+}
+
+function showWinner(name) {
+    const $winnerTitle = createElement("div", "winnerTitle");
+    $winnerTitle.innerText = name != "DRAW" ? name + " Wins!" : "DRAW";
+    $arenas.appendChild($winnerTitle);
+    disableBtn($randomBtn);
+    showReloadButton();
+}
+
+function whoWinner(player1, player2) {
+    if (player1.hp <= 0 && player2.hp <= 0) {
+        showWinner("DRAW");
+    } else if (player1.hp <= 0) {
+        showWinner(player2.name);
+    } else if (player2.hp <= 0) {
+        showWinner(player1.name);
+    }
+}
+
+function createReloadButton() {
+    const $buttonWrap = createElement("div", "reloadWrap");
+    const $button = createElement("button", "button");
+    $button.innerText = "Restart";
+    $buttonWrap.appendChild($button);
+    return $buttonWrap;
+}
+
+function showReloadButton() {
+    const $reloadBtn = createReloadButton();
+    $reloadBtn.addEventListener("click", () => {
+        window.location.reload();
+    });
+    return $arenas.append($reloadBtn);
+}
+
+$randomBtn.addEventListener("click", function() {
+    subzero.changeHP(randomNum(1, 20));
+    subzero.renderHP();
+
+    scorpion.changeHP(randomNum(1, 20));
+    scorpion.renderHP();
+
+    whoWinner(scorpion, subzero);
+});
+
+$arenas.append(createPlayer(subzero), createPlayer(scorpion));
