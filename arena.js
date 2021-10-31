@@ -1,4 +1,4 @@
-import Game from './modules/Game.js';
+import Game from './assets/libs/Game.js';
 
 const game = new Game();
 
