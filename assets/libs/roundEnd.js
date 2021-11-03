@@ -26,7 +26,7 @@ const showWinner = (name) => {
 const showReloadButton = () => {
     const $reloadBtn = createReloadButton();
     $reloadBtn.addEventListener("click", () => {
-        window.open("https://ole-db-gui.github.io/MK/");
+        window.open("https://ole-db-gui.github.io/MK/", "self");
     });
     return $arenas.append($reloadBtn);
 };
