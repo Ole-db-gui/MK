@@ -60,7 +60,7 @@ async function init() {
             el.classList.add("active");
 
             setTimeout(() => {
-                window.location.pathname = "./MK/arena.html";
+                window.open("https://ole-db-gui.github.io/MK/arena.html");
             }, 1000);
         });
 
