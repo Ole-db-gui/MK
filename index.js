@@ -1,11 +1,11 @@
-const $parent = document.querySelector('.parent');
-const $player = document.querySelector('.player');
+const $parent = document.querySelector(".parent");
+const $player = document.querySelector(".player");
 
 const createElement = (tag, className) => {
     const $tag = document.createElement(tag);
     if (className) {
         if (Array.isArray(className)) {
-            className.forEach(item => {
+            className.forEach((item) => {
                 $tag.classList.add(item);
             });
         } else {
@@ -17,50 +17,50 @@ const createElement = (tag, className) => {
 };
 
 function createEmptyPlayerBlock() {
-    const el = createElement('div', ['character', 'div11', 'disabled']);
-    const img = createElement('img');
-    img.src = 'http://reactmarathon-api.herokuapp.com/assets/mk/avatar/11.png';
+    const el = createElement("div", ["character", "div11", "disabled"]);
+    const img = createElement("img");
+    img.src = "http://reactmarathon-api.herokuapp.com/assets/mk/avatar/11.png";
     el.appendChild(img);
     $parent.appendChild(el);
 }
 
 async function init() {
-    localStorage.removeItem('player1');
+    localStorage.removeItem("player1");
 
     const players = await fetch(
-        'https://reactmarathon-api.herokuapp.com/api/mk/players'
-    ).then(res => res.json());
+        "https://reactmarathon-api.herokuapp.com/api/mk/players"
+    ).then((res) => res.json());
 
     let imgSrc = null;
     createEmptyPlayerBlock();
 
-    players.forEach(item => {
-        const el = createElement('div', ['character', `div${item.id}`]);
-        const img = createElement('img');
+    players.forEach((item) => {
+        const el = createElement("div", ["character", `div${item.id}`]);
+        const img = createElement("img");
 
-        el.addEventListener('mousemove', () => {
+        el.addEventListener("mousemove", () => {
             if (imgSrc === null) {
                 imgSrc = item.img;
-                const $img = createElement('img');
+                const $img = createElement("img");
                 $img.src = imgSrc;
                 $player.appendChild($img);
             }
         });
 
-        el.addEventListener('mouseout', () => {
+        el.addEventListener("mouseout", () => {
             if (imgSrc) {
                 imgSrc = null;
-                $player.innerHTML = '';
+                $player.innerHTML = "";
             }
         });
 
-        el.addEventListener('click', () => {
-            localStorage.setItem('player1', JSON.stringify(item));
+        el.addEventListener("click", () => {
+            localStorage.setItem("player1", JSON.stringify(item));
 
-            el.classList.add('active');
+            el.classList.add("active");
 
             setTimeout(() => {
-                window.location.pathname = 'arena.html';
+                window.location.pathname = "arena.html";
             }, 1000);
         });
 
@@ -71,4 +71,5 @@ async function init() {
         $parent.appendChild(el);
     });
 }
+
 init();
